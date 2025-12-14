@@ -128,7 +128,6 @@ if __name__ == "__main__":
     while True:
         spark_conn = None
         try:
-            print(">>> [1/4] He thong dang khoi dong ket noi...")
 
             # 1. Tạo kết nối Spark
             spark_conn = create_spark_connection()
@@ -142,8 +141,6 @@ if __name__ == "__main__":
             spark_df = connect_to_kafka(spark_conn)
             selection_df = create_selection_df_from_kafka(spark_df)
 
-            # 4. Ghi xuống Cassandra
-            print(">>> [SUCCESS] Streaming bat dau chay. Dang lang nghe Kafka...")
 
             streaming_query = selection_df.writeStream \
                 .format("org.apache.spark.sql.cassandra") \
@@ -157,7 +154,6 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(f"\n!!! HE THONG BI SAP DO LOI: {e}")
-            print("!!! Dang don dep va khoi dong lai sau 10 giay...\n")
 
             # Dọn dẹp session cũ nếu có
             if spark_conn:
