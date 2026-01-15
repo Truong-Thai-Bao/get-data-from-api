@@ -8,7 +8,20 @@ API Source -> Airflow (Scheduler) -> Kafka (Broker) -> Spark (Processing) -> Cas
 
 ![Architecture Diagram](https://res.cloudinary.com/dhohcsfbj/image/upload/v1768461300/0e65b323-1948-4c15-8929-a7603a29da97.png)
 
-## 2. Tech Stack
+## 2. Data Source & Processing
+The pipeline ingests real-time weather and air quality data from the **Open-Meteo API**.
+
+### Data Fields
+* **Raw Metrics:**
+    * `Temperature`
+    * `Humidity`
+    * `Wind Speed`
+    * `PM2.5` (Air Quality Index)
+    * `Surface Pressure`
+* **Computed Metrics:**
+    * `Dew Point`: Calculated automatically based on *Temperature* and *Humidity* during the processing stage.
+
+## 3. Tech Stack
 * **Language:** Python 3.9
 * **Orchestration:** Apache Airflow
 * **Message Broker:** Apache Kafka & Zookeeper
@@ -16,12 +29,12 @@ API Source -> Airflow (Scheduler) -> Kafka (Broker) -> Spark (Processing) -> Cas
 * **Database:** Apache Cassandra
 * **Containerization:** Docker & Docker Compose
 
-## 3. Prerequisites
+## 4. Prerequisites
 * Windows 10/11 with **WSL2** enabled.
 * **Docker Desktop** installed and running.
 * Minimum RAM: 8GB (Recommended 16GB).
 
-## 4. How to Run (One-Click Setup)
+## 5. How to Run (One-Click Setup)
 
 ### Step 1: Start Docker Desktop
 Open Docker Desktop and wait until the engine status is "Running".
@@ -43,7 +56,7 @@ A command window will appear. It will automatically:
 
 ![Command Window Success](https://res.cloudinary.com/dhohcsfbj/image/upload/v1768461386/1ba9c2de-1062-43ff-86da-99d89b630a89.png)
 
-## 5. Accessing the Interfaces
+## 6. Accessing the Interfaces
 
 Once the script finishes, you can access the services:
 
@@ -58,18 +71,18 @@ Once the script finishes, you can access the services:
 * **Spark Master UI:** [http://localhost:9090](http://localhost:9090)
   * View running streaming applications and workers.
 
-## 6. Verifying Data in Cassandra
+## 7. Verifying Data in Cassandra
 
 To check if data is being stored successfully, open PowerShell and run:
 
 ```bash
 docker exec -it cassandra cqlsh -e "SELECT * FROM spark_stream.air_quality;"
 ```
-## 7. Troubleshooting
+## 8. Troubleshooting
 - **Cassandra Exited (137/100)**: This usually means the system ran out of RAM or data corruption occurred. Run docker-compose down --volumes to reset.
 - **Spark Job Not Running**: Check the logs using docker logs get-data-spark-master-1.
 - **System Lag**: Ensure .wslconfig is configured to limit Docker's RAM usage to prevent Windows from freezing.
-## 8. Customization
+## 9. Customization
  **Changing the Data Fetch Interval**
 By default, Airflow fetches data every 2 minutes. You can change this frequency by editing the DAG file (e.g., **dags/kafka_stream.py**).
 
